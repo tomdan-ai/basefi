@@ -12,10 +12,12 @@ const ERC20_ABI = [
   'event Transfer(address indexed from, address indexed to, uint256 value)'
 ];
 
-// Token addresses on Avalanche C-Chain (Fuji testnet)
+// Token addresses on Base Network (Sepolia testnet / Mainnet)
 const TOKENS: Record<string, string> = {
-  'USDC.e': process.env.TOKEN_ADDRESS || '0xdE3D655E8a21B20401d7907A75c63147F28F3d8b',
-  'USDT.e': '0xc7198437980c041c805A1EDcbA50c1Ce5db95118'
+  'bUSD': process.env.TOKEN_ADDRESS || '0x334E2c9e60191Ce4af10db74aC5c3f1B30C99b9C', // BaseFi USD token
+  'USDC': '0x036CbD53842c5426634e7929541eC2318f3dCF7e', // Native USDC on Base
+  // Legacy support for USDC.e (deprecated - use USDC instead)
+  'USDC.e': '0x036CbD53842c5426634e7929541eC2318f3dCF7e'
 };
 
 // Cache for token balances (for demo purposes)
@@ -39,7 +41,7 @@ export const getBalance = async (symbol: string, address: string): Promise<strin
     // Query actual balance from blockchain
     const balance = await contract.balanceOf(address);
     
-    // Format balance with proper decimals (6 for USDC.e)
+    // Format balance with proper decimals (6 for USDC and bUSD)
     const formattedBalance = ethers.utils.formatUnits(balance, 6);
     
     logger.info(`Balance retrieved for ${address}: ${formattedBalance} ${symbol}`);
@@ -144,7 +146,7 @@ export const transferFromWallet = async (
     const contract = new ethers.Contract(tokenAddress, ERC20_ABI, walletInstance);
     
     // Parse amount with decimals
-    const decimals = 6; // USDC.e uses 6 decimals
+    const decimals = 6; // USDC and bUSD use 6 decimals
     const parsedAmount = ethers.utils.parseUnits(amount, decimals);
     
     // Check if user has enough balance
