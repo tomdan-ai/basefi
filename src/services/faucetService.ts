@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { avalancheProvider } from '../blockchain/services/provider';
+import { baseProvider } from '../blockchain/services/provider';
 import { faucetWallet } from '../config/wallet';
 import logger from '../config/logger';
 
@@ -13,13 +13,14 @@ const ERC20_ABI = [
 
 // Token addresses - should match what's in tokenService.ts
 const TOKENS: Record<string, string> = {
-  'USDC.e': process.env.TOKEN_ADDRESS || '0x...',  // Your deployed token address
+  'bUSD': process.env.TOKEN_ADDRESS || '0x334E2c9e60191Ce4af10db74aC5c3f1B30C99b9C',  // BaseFi USD token
+  'USDC': '0x036CbD53842c5426634e7929541eC2318f3dCF7e', // Native USDC on Base
 };
 
 /**
- * Fund a wallet with testnet USDC.e on Fuji by minting new tokens
+ * Fund a wallet with bUSD tokens on Base by minting new tokens
  */
-export const mintFujiUSDC = async (
+export const mintBaseFiUSD = async (
   to: string,
   amountLocal: string,
   shouldFundGas = true
@@ -32,7 +33,7 @@ export const mintFujiUSDC = async (
     let gasReceipt;
     if (shouldFundGas) {
       try {
-        gasReceipt = await fundFujiAVAX(to, '0.05');
+        gasReceipt = await fundBaseETH(to, '0.001'); // Smaller amount on Base (lower fees)
         logger.info(`Funded ${to} with gas: ${gasReceipt.transactionHash}`);
       } catch (gasError) {
         const errorMessage = gasError instanceof Error ? gasError.message : String(gasError);
@@ -44,10 +45,10 @@ export const mintFujiUSDC = async (
     const exchangeRate = 0.00083; // 1 NGN ≈ 0.00083 USD
     const usdAmount = (parseFloat(amountLocal) * exchangeRate).toFixed(6);
     
-    logger.info(`Converting ${amountLocal} local currency to ${usdAmount} aUSD`);
+    logger.info(`Converting ${amountLocal} local currency to ${usdAmount} bUSD`);
     
     // Get token contract address
-    const tokenAddress = TOKENS['USDC.e'];
+    const tokenAddress = TOKENS['bUSD'];
     if (!tokenAddress) {
       throw new Error('Token address not configured');
     }
@@ -63,12 +64,12 @@ export const mintFujiUSDC = async (
     const amount = ethers.utils.parseUnits(usdAmount, decimals);
     
     // Mint tokens directly to user's wallet
-    logger.info(`Minting ${usdAmount} aUSD to ${to}`);
+    logger.info(`Minting ${usdAmount} bUSD to ${to}`);
     const tx = await tokenContract.mint(to, amount);
     
     // Wait for transaction confirmation
     const receipt = await tx.wait();
-    logger.info(`Token minting completed: ${receipt.transactionHash}`);
+    logger.info(`Token minting completed on Base: ${receipt.transactionHash}`);
     
     return { receipt, gasReceipt };
   } catch (error) {
@@ -77,8 +78,22 @@ export const mintFujiUSDC = async (
   }
 };
 
+// Legacy export for backward compatibility
+export const mintFujiUSDC = mintBaseFiUSD;
 
-function fundFujiAVAX(to: string, arg1: string): any {
-    throw new Error('Function not implemented.');
+/**
+ * Fund a wallet with Base ETH for gas fees
+ */
+function fundBaseETH(to: string, amount: string): Promise<ethers.providers.TransactionReceipt> {
+  try {
+    const tx = faucetWallet.sendTransaction({
+      to: to,
+      value: ethers.utils.parseEther(amount)
+    });
+    return tx.then(t => t.wait());
+  } catch (error) {
+    logger.error('Error funding ETH:', error);
+    throw new Error(`Failed to fund ETH: ${error instanceof Error ? error.message : String(error)}`);
+  }
 }
 // Rest of your faucetService.ts code...
