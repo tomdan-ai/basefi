@@ -28,7 +28,7 @@ const walletSchema = new Schema<IWallet>(
     },
     currency: {
       type: String,
-      default: 'USDC.e',
+      default: 'bUSD', // BaseFi USD - default currency on Base network
     },
     balance: {
       type: Number,
