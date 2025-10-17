@@ -8,7 +8,12 @@
     "dev": "nodemon --exec ts-node src/index.ts",
     "build": "tsc -p tsconfig.json",
     "lint": "eslint . --ext .ts",
-    "deploy-contract": "ts-node src/blockchain/scripts/deploy.ts",
+    "compile": "npx hardhat compile",
+    "deploy-wallet": "npx hardhat run src/blockchain/scripts/deploy.ts --network baseSepolia",
+    "deploy-token": "npx hardhat run src/blockchain/scripts/deployToken.ts --network baseSepolia",
+    "deploy-contract": "npm run deploy-wallet",
+    "verify-wallet": "npx hardhat verify --network baseSepolia",
+    "verify-token": "npx hardhat verify --network baseSepolia",
     "mock-ussd": "ts-node src/ussd/mockUssdCli.ts",
     "process-deposits": "ts-node src/scripts/processDeposits.ts"
   },
