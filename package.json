@@ -1,0 +1,42 @@
+{
+  "name": "basefi",
+  "version": "1.0.0",
+  "description": "BaseFi - USSD-based blockchain wallet on Base for financial inclusion",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "node dist/src/index.js",
+    "dev": "nodemon --exec ts-node src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint . --ext .ts",
+    "deploy-contract": "ts-node src/blockchain/scripts/deploy.ts",
+    "mock-ussd": "ts-node src/ussd/mockUssdCli.ts",
+    "process-deposits": "ts-node src/scripts/processDeposits.ts"
+  },
+  "keywords": ["blockchain", "base", "ussd", "wallet", "financial-inclusion", "crypto"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.9.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "ethers": "^5.7.2",
+    "express": "^5.1.0",
+    "helmet": "^8.1.0",
+    "mongoose": "^8.14.2",
+    "morgan": "^1.10.0",
+    "winston": "^3.17.0"
+  },
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.2.3",
+    "@nomiclabs/hardhat-etherscan": "^3.1.8",
+    "@openzeppelin/contracts": "^5.3.0",
+    "@types/cors": "^2.8.18",
+    "@types/express": "^5.0.1",
+    "@types/morgan": "^1.9.9",
+    "@types/node": "^22.15.17",
+    "hardhat": "^2.24.0",
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
+}
