@@ -19,11 +19,11 @@ import crypto from 'crypto';
 // Replace these mock service imports with real service imports
 import { verifyTransaction, waitForTransaction } from '../services/transactionVerificationService';
 import { encryptWallet, getWalletForTransaction } from '../blockchain/services/encryptionService';
-import { mintFujiUSDC } from '../services/faucetService';
+import { mintBaseFiUSD } from '../services/faucetService';
 import { faucetWallet } from '../config/wallet';
 import { transferFromWallet } from '../blockchain/services/tokenService';
 import { ethers } from 'ethers';
-import { avalancheProvider } from '../blockchain/services/provider';
+import { baseProvider } from '../blockchain/services/provider';
 import { requestFiatPayout } from '../services/payoutService';
 
 // USSD Menu States
@@ -111,7 +111,7 @@ export const handleUSSD = async (req: express.Request, res: express.Response) =>
                 const newWallet = await Wallet.create({
                   userId: user._id,
                   walletAddress: walletAddress,
-                  currency: 'USDC.e'
+                  currency: 'bUSD'
                 });
                 sessions[sessionId].wallet = newWallet;
                 logger.info(`Created recovery wallet for user: ${user._id}`);
@@ -186,7 +186,7 @@ export const handleUSSD = async (req: express.Request, res: express.Response) =>
                 userId: newUser._id,
                 walletAddress: wallet.address,
                 encryptedKey: encryptedKey,
-                currency: 'USDC.e'
+                currency: 'bUSD'
               });
               
               // Additional debugging
@@ -240,7 +240,7 @@ export const handleUSSD = async (req: express.Request, res: express.Response) =>
               break;
             case '3':
               session.state = MenuState.WITHDRAW;
-              response = 'CON Enter amount to withdraw (in USDC.e):';
+              response = 'CON Enter amount to withdraw (in bUSD):';
               break;
             case '4':
               session.state = MenuState.TRANSFER;
@@ -264,22 +264,22 @@ export const handleUSSD = async (req: express.Request, res: express.Response) =>
           // Regenerate wallet from phone number and PIN
           const wallet = generateDeterministicWallet(phoneNumber, pin);
           
-          // Get AVAX balance first (native token)
-          const avaxBalance = ethers.utils.formatEther(
-            await avalancheProvider.getBalance(wallet.address)
+          // Get ETH balance first (native token on Base)
+          const ethBalance = ethers.utils.formatEther(
+            await baseProvider.getBalance(wallet.address)
           );
           
-          // Try to get USDC.e balance
-          let usdcBalance = "0.0";
+          // Try to get bUSD balance
+          let bUSDBalance = "0.0";
           try {
-            usdcBalance = await tokenService.getBalance('USDC.e', wallet.address);
+            bUSDBalance = await tokenService.getBalance('bUSD', wallet.address);
           } catch (tokenError) {
-            logger.warn(`Error getting USDC.e balance: ${tokenError}`);
+            logger.warn(`Error getting bUSD balance: ${tokenError}`);
           }
           
           response = 'END Your balance:\n';
-          response += `AVAX: ${avaxBalance}\n`;
-          response += `USDC.e: ${usdcBalance}\n`;  
+          response += `ETH: ${ethBalance}\n`;
+          response += `bUSD: ${bUSDBalance}\n`;  
           response += `Address: ${wallet.address}`;
           
           // Log with just a wallet address for privacy
@@ -320,7 +320,7 @@ export const handleUSSD = async (req: express.Request, res: express.Response) =>
             session.data.withdrawAmount = amount;
             
             // Calculate approximate NGN value
-            const exchangeRate = 1200; // 1 USDC.e ≈ 1200 NGN (example rate)
+            const exchangeRate = 1200; // 1 bUSD ≈ 1200 NGN (example rate)
             const ngnAmount = (amount * exchangeRate).toFixed(2);
             
             session.data.withdrawNgnAmount = ngnAmount;
@@ -332,7 +332,7 @@ export const handleUSSD = async (req: express.Request, res: express.Response) =>
             response = 'CON Enter your PIN to proceed:';
           }
         } else {
-          response = 'CON Enter amount to withdraw (in USDC.e):';
+          response = 'CON Enter amount to withdraw (in bUSD):';
         }
         break;
 
@@ -376,7 +376,7 @@ export const handleUSSD = async (req: express.Request, res: express.Response) =>
             session.data.recipientWalletAddress = recipientWallet.walletAddress;
             
             // Ask for transfer amount
-            response = 'CON Enter amount to transfer (in USDC.e):';
+            response = 'CON Enter amount to transfer (in bUSD):';
           } catch (error) {
             logger.error('Error looking up recipient:', error);
             response = 'END An error occurred while finding the recipient. Please try again.';
@@ -424,7 +424,7 @@ export const handleUSSD = async (req: express.Request, res: express.Response) =>
                 response += '1. Confirm\n';
                 response += '2. Cancel';
               } else if (session.data.transactionType === TransactionType.TRANSFER) {
-                response = `CON Confirm transfer of ${session.data.transferAmount} USDC.e to ${session.data.recipientPhone}:\n`;
+                response = `CON Confirm transfer of ${session.data.transferAmount} bUSD to ${session.data.recipientPhone}:\n`;
                 response += '1. Confirm\n';
                 response += '2. Cancel';
               }
@@ -462,8 +462,8 @@ export const handleUSSD = async (req: express.Request, res: express.Response) =>
                 // Generate deterministic wallet for the transaction using the PIN from the session
                 const wallet = generateDeterministicWallet(phoneNumber, session.data.pin);
                 
-                // Use real faucet to send USDC.e to user's wallet
-                const { receipt, gasReceipt } = await mintFujiUSDC(
+                // Use real faucet to mint bUSD tokens to user's wallet on Base
+                const { receipt, gasReceipt } = await mintBaseFiUSD(
                   wallet.address,
                   session.data.depositAmount.toString()
                 );
@@ -486,7 +486,7 @@ export const handleUSSD = async (req: express.Request, res: express.Response) =>
                   await Transaction.create({
                     userId: session.user._id,
                     amount: 0.05, // Standard gas amount
-                    currency: 'USDC.e',
+                    currency: 'bUSD',
                     type: TransactionType.DEPOSIT,
                     status: TransactionStatus.COMPLETED,
                     reference: gasReceipt.transactionHash, // Use actual blockchain tx hash as reference
@@ -497,7 +497,7 @@ export const handleUSSD = async (req: express.Request, res: express.Response) =>
                 }
                 
                 response = 'END Deposit successful!\n';
-                response += `Amount: ${session.data.depositAmount} USDC.e\n`;
+                response += `Amount: ${session.data.depositAmount} bUSD\n`;
                 response += `Transaction: ${receipt.transactionHash}`;
                 
               } catch (error: unknown) {
@@ -533,7 +533,7 @@ export const handleUSSD = async (req: express.Request, res: express.Response) =>
                 
                 // Execute the withdrawal as a transfer from user's wallet to treasury
                 const receipt = await transferFromWallet(
-                  'USDC.e',
+                  'bUSD',
                   wallet,
                   treasuryAddress,
                   session.data.withdrawAmount.toString()
@@ -543,7 +543,7 @@ export const handleUSSD = async (req: express.Request, res: express.Response) =>
                 await Transaction.create({
                   userId: session.user._id,
                   amount: session.data.withdrawAmount,
-                  currency: 'USDC.e',
+                  currency: 'bUSD',
                   type: TransactionType.WITHDRAWAL,
                   status: TransactionStatus.COMPLETED,
                   reference: receipt.transactionHash,
@@ -553,7 +553,7 @@ export const handleUSSD = async (req: express.Request, res: express.Response) =>
                 });
                 
                 response = 'END Withdrawal successful!\n';
-                response += `Amount: ${session.data.withdrawAmount} USDC.e\n`;
+                response += `Amount: ${session.data.withdrawAmount} bUSD\n`;
                 response += `Transaction: ${receipt.transactionHash}`;
                 
               } catch (error) {
@@ -563,7 +563,7 @@ export const handleUSSD = async (req: express.Request, res: express.Response) =>
                 await Transaction.create({
                   userId: session.user._id,
                   amount: session.data.withdrawAmount,
-                  currency: 'USDC.e',
+                  currency: 'bUSD',
                   type: TransactionType.WITHDRAWAL,
                   status: TransactionStatus.FAILED,
                   reference: `failed-${Date.now()}`,
@@ -585,7 +585,7 @@ export const handleUSSD = async (req: express.Request, res: express.Response) =>
                 
                 // Execute the transfer from user's wallet to recipient's wallet
                 const receipt = await transferFromWallet(
-                  'USDC.e',
+                  'bUSD',
                   wallet,
                   session.data.recipientWalletAddress,
                   session.data.transferAmount.toString()
@@ -595,7 +595,7 @@ export const handleUSSD = async (req: express.Request, res: express.Response) =>
                 await Transaction.create({
                   userId: session.user._id,
                   amount: session.data.transferAmount,
-                  currency: 'USDC.e',
+                  currency: 'bUSD',
                   type: TransactionType.TRANSFER,
                   status: TransactionStatus.COMPLETED,
                   reference: receipt.transactionHash,
@@ -609,7 +609,7 @@ export const handleUSSD = async (req: express.Request, res: express.Response) =>
                 await Transaction.create({
                   userId: session.data.recipientUserId,
                   amount: session.data.transferAmount,
-                  currency: 'USDC.e',
+                  currency: 'bUSD',
                   type: TransactionType.RECEIVE,
                   status: TransactionStatus.COMPLETED,
                   reference: receipt.transactionHash,
@@ -620,7 +620,7 @@ export const handleUSSD = async (req: express.Request, res: express.Response) =>
                 });
                 
                 response = 'END Transfer successful!\n';
-                response += `Amount: ${session.data.transferAmount} USDC.e\n`;
+                response += `Amount: ${session.data.transferAmount} bUSD\n`;
                 response += `To: ${session.data.recipientPhone.substring(0, 4)}****${session.data.recipientPhone.substring(session.data.recipientPhone.length - 2)}\n`;
                 response += `Transaction: ${receipt.transactionHash}`;
                 
@@ -631,7 +631,7 @@ export const handleUSSD = async (req: express.Request, res: express.Response) =>
                 await Transaction.create({
                   userId: session.user._id,
                   amount: session.data.transferAmount,
-                  currency: 'USDC.e',
+                  currency: 'bUSD',
                   type: TransactionType.TRANSFER,
                   status: TransactionStatus.FAILED,
                   reference: `failed-${Date.now()}`,
@@ -703,7 +703,7 @@ export const handleUSSD = async (req: express.Request, res: express.Response) =>
           session.data.accountNumber = accountNumber;
           
           // Show final confirmation
-          response = `CON Confirm withdrawal of ${session.data.withdrawAmount} USDC.e (≈${session.data.withdrawNgnAmount} NGN)\n`;
+          response = `CON Confirm withdrawal of ${session.data.withdrawAmount} bUSD (≈${session.data.withdrawNgnAmount} NGN)\n`;
           response += `to Account: ${accountNumber}\n`;
           response += '1. Confirm\n';
           response += '2. Cancel';
@@ -726,7 +726,7 @@ export const handleUSSD = async (req: express.Request, res: express.Response) =>
             
             // Execute the blockchain transaction
             const receipt = await transferFromWallet(
-              'USDC.e',
+              'bUSD',
               wallet,
               treasuryAddress,
               session.data.withdrawAmount.toString()
@@ -736,7 +736,7 @@ export const handleUSSD = async (req: express.Request, res: express.Response) =>
             await Transaction.create({
               userId: session.user._id,
               amount: session.data.withdrawAmount,
-              currency: 'USDC.e',
+              currency: 'bUSD',
               type: TransactionType.WITHDRAWAL,
               status: TransactionStatus.COMPLETED,
               reference: receipt.transactionHash,
@@ -755,7 +755,7 @@ export const handleUSSD = async (req: express.Request, res: express.Response) =>
             );
             
             response = 'END Withdrawal initiated successfully!\n';
-            response += `Amount: ${session.data.withdrawAmount} USDC.e (≈${session.data.withdrawNgnAmount} NGN)\n`;
+            response += `Amount: ${session.data.withdrawAmount} bUSD (≈${session.data.withdrawNgnAmount} NGN)\n`;
             response += `Account: ${session.data.accountNumber}\n`;
             response += `Reference: ${payoutResponse.reference}\n`;
             response += 'Your bank account will be credited shortly.';
@@ -767,7 +767,7 @@ export const handleUSSD = async (req: express.Request, res: express.Response) =>
             await Transaction.create({
               userId: session.user._id,
               amount: session.data.withdrawAmount,
-              currency: 'USDC.e',
+              currency: 'bUSD',
               type: TransactionType.WITHDRAWAL,
               status: TransactionStatus.FAILED,
               reference: `failed-${Date.now()}`,
