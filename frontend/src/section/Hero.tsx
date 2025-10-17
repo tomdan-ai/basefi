@@ -16,14 +16,14 @@ const Hero = () => {
             'text-4xl md:text-5xl lg:text-6xl font-[900] max-w-4xl mx-auto leading-tight text-black dark:text-white'
           }
         >
-          Crypto Access for Everyone — Even Without Internet
+          Crypto Access for Everyone — Even Without a Smartphone
         </h1>
         <p
           className={
             'mt-6 text-xl md:text-2xl max-w-2xl mx-auto text-gray-700 dark:text-gray-300 font-light'
           }
         >
-          Dial a code. Swap fiat ↔ crypto. Powered by Avalanche.
+          Dial a code. Swap fiat ↔ crypto. Powered by Base.
         </p>
         <div className='mt-10 flex flex-col sm:flex-row gap-4 justify-center'>
           {/* <Button

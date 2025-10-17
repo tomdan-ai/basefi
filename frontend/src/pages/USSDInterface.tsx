@@ -12,7 +12,7 @@ export default function USSDInterface () {
             Try Our USSD Interface
           </h1>
           <p className='text-center text-muted-foreground max-w-2xl mx-auto mb-12'>
-            Experience how Avanomad works on feature phones. Dial a USSD code
+            Experience how BaseFi works on feature phones. Dial a USSD code
             (try *123#) to simulate the service.
           </p>
           <div className='flex items-center justify-center'>

@@ -5,7 +5,7 @@ import {
   HowItWorks,
   Problems,
   Solutions,
-  WhyAvalanche
+  WhyBase
 } from '@/section'
 
 const Home = () => {
@@ -16,7 +16,7 @@ const Home = () => {
       <div className='relative'>
         <div
           className={
-            'absolute inset-0 bg-gradient-to-tr from-primary-red to-primary-blue z-[-1] via-white/80 dark:via-black/80 '
+            'absolute inset-0 bg-gradient-to-tr from-[#0052FF]/20 to-[#0052FF]/40 z-[-1] via-white/80 dark:via-black/80 '
           }
         />
         <Hero />
@@ -26,7 +26,7 @@ const Home = () => {
       <Solutions />
       <Features />
       <HowItWorks />
-      <WhyAvalanche />
+      <WhyBase />
       <Footer />
     </>
   )

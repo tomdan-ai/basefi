@@ -9,7 +9,7 @@ const Solutions = () => {
         <div>
           <SectionHeading
             title='Our Solution'
-            subtitle='USSD + Avalanche: Bringing crypto to feature phones'
+            subtitle='USSD + Base blockchain: Bringing crypto to feature phones'
           />
 
           <div className='mt-8 space-y-6'>
@@ -28,7 +28,7 @@ const Solutions = () => {
         </div>
 
         <div className='relative /h-[400px] rounded-lg overflow-hidden shadow-xl' data-aos="flip-up">
-          <div className='absolute inset-0 bg-gradient-to-r from-red-600/20 to-blue-600/20 z-10 rounded-lg' />
+          <div className='absolute inset-0 bg-gradient-to-r from-[#0052FF]/20 to-[#0052FF]/40 z-10 rounded-lg' />
           <img
             src='/hand-holding-phone-displaying-phonebook.jpg'
             alt='USSD interface on a feature phone'

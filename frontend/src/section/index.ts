@@ -3,4 +3,4 @@ export { default as Hero } from './Hero';
 export { default as HowItWorks } from './HowItWorks';
 export { default as Problems } from './Problems';
 export { default as Solutions } from './Solutions';
-export { default as WhyAvalanche } from './WhyAvalanche';
+export { default as WhyBase } from './WhyBase';

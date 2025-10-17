@@ -23,8 +23,8 @@ export const NAV_LINKS = [
     url: "#features",
   },
   {
-    name: "Why Avalanche",
-    url: "#why-avalanche",
+    name: "Why Base",
+    url: "#why-base",
   },
 ]
 
@@ -52,8 +52,8 @@ export const SOLUTION_POINTS = [
     description: "Using simple dial codes (*123#) that work on any mobile phone, even without internet.",
   },
   {
-    title: "Avalanche Blockchain",
-    description: "Fast, low-cost transactions powered by Avalanche's high-performance network.",
+    title: "Base Blockchain",
+    description: "Fast, low-cost transactions powered by Base - Coinbase's Ethereum L2 network.",
   },
   {
     title: "Local Currency Support",
@@ -68,7 +68,7 @@ export const SOLUTION_POINTS = [
 export const HOW_IT_WORKS_STEPS = [
   {
     title: "Dial the USSD Code",
-    description: "Simply dial *123# on any mobile phone to access AVANOMAD services.",
+    description: "Simply dial *123# on any mobile phone to access BaseFi services.",
   },
   {
     title: "Register or Login",
@@ -80,7 +80,7 @@ export const HOW_IT_WORKS_STEPS = [
   },
   {
     title: "Complete Transaction",
-    description: "Follow the prompts to complete your transaction securely.",
+    description: "Follow the prompts to complete your transaction securely on Base network.",
   },
 ]
 
@@ -103,7 +103,7 @@ export const FEATURES: Feature[] = [
   },
   {
     title: "Fast Processing",
-    description: "Transactions are processed quickly on the Avalanche network.",
+    description: "Transactions are processed quickly on the Base network with ~2 second block times.",
     icon: Zap,
   },
   {
@@ -123,43 +123,46 @@ export const FEATURES: Feature[] = [
   },
 ]
 
-export const AVALANCHE_BENEFITS = [
+export const BASE_BENEFITS = [
   {
-    title: "Fast Finality",
-    description: "Transactions confirm in less than 2 seconds, perfect for mobile interactions.",
+    title: "Lightning Fast",
+    description: "~2 second block times with instant finality for seamless mobile interactions.",
     icon: Clock,
   },
   {
-    title: "Low Fees",
-    description: "Minimal transaction costs make micro-transactions viable for all users.",
+    title: "Ultra-Low Fees",
+    description: "Minimal transaction costs (<$0.01) make micro-transactions viable for all users.",
     icon: DollarSign,
   },
   {
-    title: "Scalability",
-    description: "Handles thousands of transactions per second to support mass adoption.",
+    title: "Scalable L2",
+    description: "Built on Ethereum as a Layer 2, combining security with high throughput.",
     icon: Zap,
   },
   {
-    title: "Eco-Friendly",
-    description: "Energy-efficient consensus mechanism with minimal environmental impact.",
+    title: "Backed by Coinbase",
+    description: "Supported by Coinbase with seamless integration and strong ecosystem.",
     icon: Globe,
   },
 ]
 
+// Legacy export for backward compatibility
+export const AVALANCHE_BENEFITS = BASE_BENEFITS;
+
 export const SOCIAL_LINKS = [
   {
     name: "Twitter",
-    url: "https://twitter.com/avanomad",
+    url: "https://twitter.com/basefi",
     icon: Twitter,
   },
   {
     name: "Telegram",
-    url: "https://t.me/avanomad",
+    url: "https://t.me/basefi",
     icon: MessageSquare,
   },
   {
     name: "GitHub",
-    url: "https://github.com/tomdan-ai/avanomad",
+    url: "https://github.com/tomdan-ai/basefi",
     icon: Github,
   },
 ]

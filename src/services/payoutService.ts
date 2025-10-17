@@ -46,7 +46,7 @@ export const requestFiatPayout = async (
       amount,
       account_number: accountNumber,
       bank_code: bankCode,
-      narration: `Avanomad withdrawal ${reference}`,
+      narration: `BaseFi withdrawal ${reference}`,
       reference
     }, {
       headers: {

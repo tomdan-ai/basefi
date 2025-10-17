@@ -39,13 +39,13 @@ const NavBar = () => {
       {/* Logo Light Mode */}
       <img
         src={scrolled ? '/logo-black.png' : '/logo-black.png'}
-        alt='Avanomad Logo'
+        alt='BaseFi Logo'
         className='h-20 w-auto block dark:hidden z-50 '
       />
       {/* Logo for Dark Mode */}
       <img
         src={scrolled ? '/logo-white.png' : '/logo-white.png'}
-        alt='Avanomad Logo'
+        alt='BaseFi Logo'
         className='h-20 w-auto dark:block hidden z-50'
       />
       <nav className='hidden md:flex items-center gap-6'>
@@ -106,12 +106,12 @@ const NavBar = () => {
           <div className='flex justify-between items-center mb-10'>
             <img
               src='/logo-white.png'
-              alt='Avanomad Logo'
+              alt='BaseFi Logo'
               className='h-10 w-auto hidden dark:block'
             />
             <img
               src='/logo-black.png'
-              alt='Avanomad Logo'
+              alt='BaseFi Logo'
               className='h-10 w-auto block dark:hidden'
             />
 

@@ -55,7 +55,7 @@ export const processUSSD = async (
   // If we had an active session ID, tell the server to clear it
   if (sessionId) {
     try {
-      await axios.post(`${API_URL}/reset-session`, { sessionId });
+      await axios.post(`${API_BASE_URL}/reset-session`, { sessionId });
     } catch (error) {
       console.error('Failed to reset session on server:', error);
     }

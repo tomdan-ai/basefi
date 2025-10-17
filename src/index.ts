@@ -26,7 +26,7 @@ app.use(express.urlencoded({ extended: true }));
 const corsOptions = {
   origin: process.env.FRONTEND_URL 
     ? process.env.FRONTEND_URL.split(',').map(url => url.trim())
-    : ['http://localhost:5173', 'https://avanomad.vercel.app', 'https://avanomad-esbp.onrender.com', 'http://localhost:5174'],
+    : ['http://localhost:5173', 'https://basefi.vercel.app', 'https://basefi.onrender.com', 'http://localhost:5174'],
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type'],
   credentials: true
@@ -36,7 +36,7 @@ app.use(cors(corsOptions));
 
 // Routes
 app.get('/', (req, res) => {
-  res.json({ message: 'Welcome to Avanomad API' });
+  res.json({ message: 'Welcome to BaseFi API' });
 });
 
 // Health check endpoint

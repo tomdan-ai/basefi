@@ -1,6 +1,6 @@
 ## Overview
 
-Avanomad is a blockchain-based wallet application designed to provide cryptocurrency access via USSD (Unstructured Supplementary Service Data) interfaces on feature phones. The platform enables financial inclusion by allowing users without smartphones to access and use digital assets on the Avalanche blockchain.
+BaseFi is a blockchain-based wallet application designed to provide cryptocurrency access via USSD (Unstructured Supplementary Service Data) interfaces on feature phones. The platform enables financial inclusion by allowing users without smartphones to access and use digital assets on the Base blockchain.
 
 ## Features Implemented
 
@@ -10,9 +10,9 @@ Avanomad is a blockchain-based wallet application designed to provide cryptocurr
 - **Mock USSD CLI**: Testing environment for USSD interactions without actual telecom integration
 
 ### Blockchain Integration
-- **Avalanche C-Chain**: Built on Avalanche's EVM-compatible blockchain
-- **Stablecoin Support**: Integration with USDC.e and USDT.e tokens
-- **Smart Contract**: Implementation of AvanomadWallet.sol for secure asset management
+- **Base Network**: Built on Base, Coinbase's secure, low-cost Ethereum L2 blockchain
+- **Stablecoin Support**: Integration with bUSD (BaseFi USD) and native USDC tokens
+- **Smart Contract**: Implementation of BaseFiWallet.sol for secure asset management
 
 ### Wallet Management
 - **Deterministic Wallet Generation**: Wallets are derived from phone number and PIN combinations
@@ -36,7 +36,7 @@ Avanomad is a blockchain-based wallet application designed to provide cryptocurr
 ## Technical Stack
 - **Backend**: Node.js with Express and TypeScript
 - **Database**: MongoDB with Mongoose ODM
-- **Blockchain**: Ethers.js for Avalanche C-Chain interaction
+- **Blockchain**: Ethers.js for Base Network interaction
 - **Logging**: Winston logger for comprehensive activity tracking
 - **API**: RESTful endpoints for USSD integration and other services
 
@@ -45,7 +45,7 @@ Avanomad is a blockchain-based wallet application designed to provide cryptocurr
 ### Prerequisites
 - Node.js (v14+)
 - MongoDB
-- Avalanche RPC access
+- Base RPC access
 
 ### Installation
 ```bash
@@ -84,9 +84,22 @@ The application follows a modular architecture:
 - services: Business logic implementation
 - ussd: USSD service implementation
 
+## Smart Contracts
+
+### BaseFiToken (bUSD)
+- **Address**: 0x334E2c9e60191Ce4af10db74aC5c3f1B30C99b9C (Base Sepolia)
+- **Type**: ERC20 stablecoin
+- **Decimals**: 6
+- **Features**: Mintable, Burnable, Ownable
+
+### BaseFiWallet
+- **Address**: 0xC900D20E7ec5Ee83179388591b01Af42714d511A (Base Sepolia)
+- **Type**: Smart contract wallet
+- **Features**: Meta-transactions, Operator system, Multi-token support
+
 ## Future Enhancements
 - Integration with actual USSD service providers
-- Multiple blockchain network support
+- Multiple blockchain network support (Base Mainnet)
 - Enhanced security features
 - Additional token support
 - Web interface for administration
