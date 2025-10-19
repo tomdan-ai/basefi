@@ -2,32 +2,61 @@ import { MenuIcon, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { NAV_LINKS } from '@/constant'
 import { useState, useEffect } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
 import DarkModeToggle from './DarkModeToggle'
 
 const NavBar = () => {
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  useEffect(() => {
-    window.addEventListener('scroll', () =>
-      setScrolled(window.pageYOffset > 200)
-    )
+  const navigate = useNavigate()
+  const location = useLocation()
 
-    return () => {
-      window.removeEventListener('scroll', () =>
-        setScrolled(window.pageYOffset > 200)
-      )
-    }
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.pageYOffset > 200)
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen)
-    // to revent scrolling when menu is open
+    // to prevent scrolling when menu is open
     if (!menuOpen) {
       document.body.style.overflow = 'hidden'
     } else {
       document.body.style.overflow = 'auto'
     }
   }
+
+  // Handle logo click - navigate to home
+  const handleLogoClick = () => {
+    navigate('/')
+  }
+
+  // Handle navigation link clicks
+  const handleNavClick = (url: string) => {
+    // If it's a hash link and we're not on home page, navigate to home first
+    if (url.startsWith('#')) {
+      if (location.pathname !== '/') {
+        // Navigate to home page with the hash
+        navigate(`/${url}`)
+      } else {
+        // Already on home page, just scroll to section
+        const element = document.querySelector(url)
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' })
+        }
+      }
+    } else {
+      // Regular navigation
+      navigate(url)
+    }
+
+    // Close mobile menu if open
+    if (menuOpen) {
+      toggleMenu()
+    }
+  }
+
   return (
     <header
       className={` ${
@@ -36,32 +65,33 @@ const NavBar = () => {
           : '!bg-transparent'
       } z-50 fixed mx-auto px-4 md:py-3 w-full flex items-center justify-between top-0 transition-all duration-300 md:px-10 lg:px-20 text-white`}
     >
-      {/* Logo Light Mode */}
-      <img
-        src={scrolled ? '/logo-black.png' : '/logo-black.png'}
-        alt='BaseFi Logo'
-        className='h-20 w-auto block dark:hidden z-50 '
-      />
-      {/* Logo for Dark Mode */}
-      <img
-        src={scrolled ? '/logo-white.png' : '/logo-white.png'}
-        alt='BaseFi Logo'
-        className='h-20 w-auto dark:block hidden z-50'
-      />
+      {/* Clickable Logo - navigates to home */}
+      <button
+        onClick={handleLogoClick}
+        className='cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 rounded'
+        aria-label='Go to home page'
+      >
+        <img
+          src='/basefi.png'
+          alt='BaseFi Logo'
+          className='h-20 w-auto z-50 hover:opacity-80 transition-opacity'
+        />
+      </button>
+
       <nav className='hidden md:flex items-center gap-6'>
         {NAV_LINKS.map(link => (
-          <a
+          <button
             key={link.name}
-            href={link.url}
+            onClick={() => handleNavClick(link.url)}
             className={cn(
-              'font-medium transition-colors hover:text-black text-xl uppercase',
+              'font-medium transition-colors hover:text-blue-500 text-xl uppercase cursor-pointer',
               scrolled
                 ? 'text-gray-700 dark:text-gray-300'
                 : 'dark:text-white text-black'
             )}
           >
             {link.name}
-          </a>
+          </button>
         ))}
         <DarkModeToggle
           className={
@@ -70,16 +100,6 @@ const NavBar = () => {
               : 'dark:text-white text-black'
           }
         />
-        {/* <Button
-          asChild
-          variant='outline'
-          className={cn(
-            'transition-colors',
-            'bg-black/10 text-black border-black/20 hover:bg-black/20'
-          )}
-        >
-          <a href='#waitlist'>Join Waitlist</a>
-        </Button> */}
       </nav>
 
       <div className='flex md:hidden gap-3'>
@@ -104,16 +124,17 @@ const NavBar = () => {
       >
         <div className='p-5'>
           <div className='flex justify-between items-center mb-10'>
-            <img
-              src='/logo-white.png'
-              alt='BaseFi Logo'
-              className='h-10 w-auto hidden dark:block'
-            />
-            <img
-              src='/logo-black.png'
-              alt='BaseFi Logo'
-              className='h-10 w-auto block dark:hidden'
-            />
+            <button
+              onClick={handleLogoClick}
+              className='cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 rounded'
+              aria-label='Go to home page'
+            >
+              <img
+                src='/basefi.png'
+                alt='BaseFi Logo'
+                className='h-10 w-auto hover:opacity-80 transition-opacity'
+              />
+            </button>
 
             <button
               className='cursor-pointer p-2 hover:bg-gray-600 dark:hover:bg-gray-200 rounded-full'
@@ -125,23 +146,16 @@ const NavBar = () => {
           </div>{' '}
           <div className='flex flex-col gap-6 mt-8'>
             {NAV_LINKS.map(link => (
-              <a
+              <button
                 key={link.name}
-                href={link.url}
-                onClick={toggleMenu}
+                onClick={() => handleNavClick(link.url)}
                 className={cn(
-                  'font-medium transition-colors  text-xl py-2 border-b border-border'
+                  'font-medium transition-colors text-xl py-2 border-b border-border text-left cursor-pointer hover:text-blue-500'
                 )}
               >
                 {link.name}
-              </a>
+              </button>
             ))}
-
-            {/* <Button asChild className='mt-6'>
-              <a href='#waitlist' onClick={toggleMenu}>
-                Join Waitlist
-              </a>
-            </Button> */}
           </div>
         </div>
       </nav>

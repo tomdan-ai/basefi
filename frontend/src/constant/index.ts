@@ -26,6 +26,10 @@ export const NAV_LINKS = [
     name: "Why Base",
     url: "#why-base",
   },
+  {
+    name: "USSD Demo",
+    url: "/ussd-interface",
+  },
 ]
 
 export const PROBLEM_STATS = [
