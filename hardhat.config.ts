@@ -1,6 +1,6 @@
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomiclabs/hardhat-ethers";
-import "@nomicfoundation/hardhat-verify";
+import "@nomiclabs/hardhat-etherscan";
 import * as dotenv from "dotenv";
 
 dotenv.config();
@@ -30,6 +30,31 @@ const config: HardhatUserConfig = {
       chainId: 84532,
       gasPrice: 1000000000, // 1 gwei
     },
+  },
+  // Verification configuration for BaseScan
+  etherscan: {
+    apiKey: {
+      base: process.env.BASESCAN_API_KEY || "dummy",
+      baseSepolia: process.env.BASESCAN_API_KEY || "dummy",
+    },
+    customChains: [
+      {
+        network: "base",
+        chainId: 8453,
+        urls: {
+          apiURL: "https://api.basescan.org/api",
+          browserURL: "https://basescan.org",
+        },
+      },
+      {
+        network: "baseSepolia",
+        chainId: 84532,
+        urls: {
+          apiURL: "https://api-sepolia.basescan.org/api",
+          browserURL: "https://sepolia.basescan.org",
+        },
+      },
+    ],
   },
   paths: {
     sources: "./src/blockchain/contracts",
