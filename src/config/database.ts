@@ -10,11 +10,15 @@ const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://kingtom:tomdan-ai@
 // Connect to MongoDB
 export const connectToDatabase = async (): Promise<void> => {
   try {
-    await mongoose.connect(MONGODB_URI);
+    await mongoose.connect(MONGODB_URI, {
+      serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
+      socketTimeoutMS: 45000, // Close sockets after 45s of inactivity
+    });
     logger.info('Connected to MongoDB');
   } catch (error) {
     logger.error('MongoDB connection error:', error);
-    process.exit(1);
+    logger.info('Continuing without database connection for demo purposes...');
+    // Don't exit, continue without database for demo
   }
 };
 
