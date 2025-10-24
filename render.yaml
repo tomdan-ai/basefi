@@ -9,3 +9,5 @@ services:
         value: production
       - key: PORT
         value: 10000
+      - key: MONGODB_URI
+        value: mongodb+srv://basefi_db_user:jII2Yi0Pb8mIKpeM@cluster0.p5fg7dz.mongodb.net/basefi?retryWrites=true&w=majority&appName=basefi

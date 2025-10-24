@@ -5,7 +5,7 @@ import logger from './logger';
 dotenv.config();
 
 // MongoDB connection URI
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://kingtom:tomdan-ai@avanomad.zjzwbn2.mongodb.net/avanomad?retryWrites=true&w=majority&appName=avanomad';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://basefi_db_user:jII2Yi0Pb8mIKpeM@cluster0.p5fg7dz.mongodb.net/basefi?retryWrites=true&w=majority&appName=basefi';
 
 // Connect to MongoDB
 export const connectToDatabase = async (): Promise<void> => {
